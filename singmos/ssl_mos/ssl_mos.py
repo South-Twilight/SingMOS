@@ -23,18 +23,11 @@ class SSL_Model(nn.Module):
     def __init__(
         self, 
         model_path, 
-        ssl_out_dim=768,
+        ssl_out_dim,
         ssl_model_name = "wav2vec2_small",
     ):
         super(SSL_Model, self).__init__()
 
-        if ssl_model_name in ["hubert_base", "wav2vec2_small"]: 
-            ssl_out_dim = 768
-        elif ssl_model_name in [ "hubert_large", "wav2vec2_large", "xlsr_base"]:
-            ssl_out_dim = 1024
-        else:
-            raise ValueError("Please check ssl_model_name and make sure in ssl_model_list.")
-        
         if ssl_model_name in ssl_model_list:
             model, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([model_path])
             ssl_model = model[0]
@@ -53,11 +46,18 @@ class Singing_SSL_MOS(nn.Module):
     def __init__(
         self,
         model_path,
-        ssl_dim,
+        ssl_dim=768,
         ssl_model_name = "wav2vec2_small",
     ):
         super(Singing_SSL_MOS, self).__init__()
-        
+ 
+        if ssl_model_name in ["hubert_base", "wav2vec2_small"]: 
+            ssl_dim = 768
+        elif ssl_model_name in [ "hubert_large", "wav2vec2_large", "xlsr_base"]:
+            ssl_dim = 1024
+        else:
+            raise ValueError("Please check ssl_model_name and make sure in ssl_model_list.")
+               
         feature_dim = ssl_dim
         self.ssl_model = SSL_Model(
             model_path,
