@@ -20,7 +20,7 @@ URLS = {
 
 def download_model(model_url, tgt_path):
     if not os.path.exists(tgt_path):
-        urllib.request.urlretrieve(model_url, tgt_path)
+        os.system(f'wget {model_url} -O {tgt_path}')
 
 
 def singing_ssl_mos(pretrained: bool = True, **kwargs) -> Singing_SSL_MOS:
