@@ -10,9 +10,8 @@ from singmos.ssl_mos.ssl_mos import Singing_SSL_MOS # pylint: disable=wrong-impo
 
 
 URLS = {
-    "local": "/data3/tyx/mos-finetune-ssl/checkpoints-v0/ckpt_15",
-    "wav2vec2_small": "/data3/tyx/mos-finetune-ssl/fairseq/wav2vec_small.pt",
-    "singing_ssl_mos": "/data3/tyx/mos-finetune-ssl/checkpoints-v0/ckpt_15"
+    "wav2vec2_small": "https://dl.fbaipublicfiles.com/fairseq/wav2vec/wav2vec_small.pt",
+    "singing_ssl_mos": "https://github.com/South-Twilight/SingMOS/releases/download/checkpoint/ft_wav2vec2_small_15steps.pt"
 }
 # [Origin]
 # "singing_ssl_mos" is derived from official nii-yamagishilab/mos-finetune-ssl, under BSD 3-Clause License (Copyright (c) 2021, Yamagishi Laboratory, National Institute of Informatics, https://github.com/nii-yamagishilab/mos-finetune-ssl/blob/main/LICENSE
@@ -32,17 +31,18 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> Singing_SSL_MOS:
         progress - Whether to show model checkpoint load progress
     """
     if pretrained is True:
-        # if not os.path.exists("checkpoints"):
-        #     os.makedirs("checkpoints")
-        # model_path = "checkpoints/singing_ssl_mos.pt"
-        # download_model(URLS["singing_ssl_mos"], model_path)
+        if not os.path.exists("checkpoints"):
+            os.makedirs("checkpoints")
+        base_model_path = "checkpoints/wav2vec_small.pt"
+        ft_model_path = "checkpoints/ft_wav2vec2_small_15steps.pt"
+        download_model(URLS["wav2vec2_small"], base_model_path)
+        download_model(URLS["singing_ssl_mos"], ft_model_path)
 
-        base_model_path = URLS["wav2vec2_small"]
         model = Singing_SSL_MOS(
             model_path=base_model_path,
         )
         model.eval()
-        model.load_state_dict(torch.load(URLS["singing_ssl_mos"]))
+        model.load_state_dict(torch.load(ft_model_path))
         return model
     else:
         raise ValueError("Please specify pretrained=True and provide a valid model_path.")
