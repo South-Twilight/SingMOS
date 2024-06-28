@@ -11,6 +11,7 @@ from singmos.ssl_mos.ssl_mos import Singing_SSL_MOS # pylint: disable=wrong-impo
 
 URLS = {
     "local": "/data3/tyx/mos-finetune-ssl/checkpoints-v0/ckpt_15",
+    "wav2vec2_small": "/data3/tyx/mos-finetune-ssl/fairseq/wav2vec_small.pt",
     "singing_ssl_mos": "/data3/tyx/mos-finetune-ssl/checkpoints-v0/ckpt_15"
 }
 # [Origin]
@@ -36,13 +37,12 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> Singing_SSL_MOS:
         # model_path = "checkpoints/singing_ssl_mos.pt"
         # download_model(URLS["singing_ssl_mos"], model_path)
 
-        model_path = URLS["local"]
+        base_model_path = URLS["wav2vec2_small"]
         model = Singing_SSL_MOS(
-            model_path=URLS["local"],
-            ssl_dim=768,
+            model_path=base_model_path,
         )
         model.eval()
-
+        model.load_state_dict(torch.load(URLS["singing_ssl_mos"]))
         return model
     else:
         raise ValueError("Please specify pretrained=True and provide a valid model_path.")
