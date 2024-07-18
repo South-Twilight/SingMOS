@@ -23,7 +23,7 @@ import torch
 import librosa
 
 wave, sr = librosa.load("<your_audio>.wav", sr=None, mono=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singsing-ssl-mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singing_ssl_mos", trust_repo=True)
 score = predictor(torch.from_numpy(wave).unsqueeze(0), sr)
 # tensor([3.7730])
 ```
@@ -58,7 +58,7 @@ Currently we provide below models:
 
 | Model        | specifier        | paper                         |
 |--------------|------------------|-------------------------------|
-| Singing-SSL-MOS | `singing-ssl-mos` | [Cooper (2021)][paper_sslmos21] |
+| Singing-SSL-MOS | `singing_ssl_mos` | [Cooper (2021)][paper_sslmos21] |
 
 
 ### Acknowlegements <!-- omit in toc -->
