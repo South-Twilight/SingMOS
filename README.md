@@ -10,7 +10,7 @@ Singing MOS Predictor (Baseline for [Singing Track in VoiceMOS Challenge 2024](h
 Predict subjective score with only 2 lines of code, with various MOS prediction systems.
 
 ```python
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singing-ssl-mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singing_ssl_mos", trust_repo=True)
 score = predictor(wave, sr)
 # tensor([3.7730]), good quality singing!
 ```
