@@ -1,6 +1,6 @@
 """torch.hub configuration."""
 
-dependencies = ["torch", "fairseq", "urllib"]
+dependencies = ["torch", "s3prl"]
 
 import os
 import torch        # pylint: disable=wrong-import-position
