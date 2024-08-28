@@ -58,7 +58,7 @@ Currently we provide below models:
 
 | Model        | specifier        | paper                         |
 |--------------|------------------|-------------------------------|
-| Singing-SSL-MOS | `singing-ssl-mos` | [Cooper (2021)][paper_sslmos21] |
+| Singing-SSL-MOS | `singing_ssl_mos` | [Cooper (2021)][paper_sslmos21] |
 
 
 ### News:
