@@ -1,14 +1,10 @@
 """torch.hub configuration."""
 
 dependencies = ["torch", "s3prl"]
-dependencies = ["torch", "s3prl"]
 
 import os
 import torch        # pylint: disable=wrong-import-position
 
-
-
-from singmos.ssl_mos.ssl_mos import MOS_Predictor, load_ssl_model_s3prl # pylint: disable=wrong-import-position
 from singmos.ssl_mos.ssl_mos import MOS_Predictor, load_ssl_model_s3prl # pylint: disable=wrong-import-position
 
 
@@ -25,7 +21,6 @@ def download_model(model_url, tgt_path):
         os.system(f'wget {model_url} -O {tgt_path}')
 
 
-def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
 def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
     """
     `Singing SSL MOS` singing naturalness MOS predictor.
@@ -44,20 +39,9 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
 
         print("loading ft model...")
         ft_model_path = "checkpoints/ft_wav2vec2_small_10steps.pt"
-
-        model_type = "wav2vec2_base_960"
-        print("loading base model...")
-        ssl_model, ssl_dim = load_ssl_model_s3prl(model_type)
-        print("loading base model ended.")
-
-        print("loading ft model...")
-        ft_model_path = "checkpoints/ft_wav2vec2_small_10steps.pt"
         download_model(URLS["singing_ssl_mos"], ft_model_path)
         print("loading ft model ended.")
-        print("loading ft model ended.")
 
-        model = MOS_Predictor(
-            ssl_model_type=model_type,
         model = MOS_Predictor(
             ssl_model_type=model_type,
         )
