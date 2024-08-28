@@ -1,86 +1,105 @@
 import os
 import argparse
 import fairseq
+import logging
 
+import numpy as np
 import torch
 import torchaudio
 import torch.nn as nn
+import torch.optim as optim
 
-import logging
+from s3prl.nn import S3PRLUpstream
 
 import random
 random.seed(1984)
 
 ssl_model_list = [
+    "wavlm_base",
+    "wavlm_large",
+    "wav2vec2_base_960",
+    "wav2vec2_large_lv60_cv_swbd_fsh",
     "hubert_base",
-    "hubert_large",
-    "wav2vec2_small",
-    "wav2vec2_large",
-    "xlsr_base",
+    "hubert_large_ll60k",
+    "xls_r_300m",
 ]
+
+def load_ssl_model_s3prl(ssl_model_type, use_proxy = False):
+    assert ssl_model_type in ssl_model_list, (
+        f"***ERROR***: {ssl_model_type} is not support, please check ssl_model_list."
+    )
+    if "base" in ssl_model_type:
+        SSL_OUT_DIM = 768
+    elif "large" in ssl_model_type or ssl_model_type in ["xls_r_300m"]:
+        SSL_OUT_DIM = 1024
+    if use_proxy:
+        os.environ['http_proxy'] = 'http://127.0.0.1:7890'
+        os.environ['https_proxy'] = 'http://127.0.0.1:7890'
+    ssl_model = S3PRLUpstream(ssl_model_type)
+    return SSL_Model(ssl_model, SSL_OUT_DIM), SSL_OUT_DIM
+
 
 class SSL_Model(nn.Module):
     def __init__(
         self, 
-        model_path, 
+        ssl_model, 
         ssl_out_dim,
-        ssl_model_name = "wav2vec2_small",
     ):
         super(SSL_Model, self).__init__()
-
-        if ssl_model_name in ssl_model_list:
-            model, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([model_path])
-            ssl_model = model[0]
-            ssl_model.remove_pretraining_modules()
         self.ssl_model = ssl_model
-        self.ssl_features = ssl_out_dim
+        self.ssl_out_dim = ssl_out_dim
         
-    def forward(self, wav):
-        wav = wav.squeeze(1)  # [batches, audio_len]
-        res = self.ssl_model(wav, mask=False, features_only=True)
-        x = res['x']
-        return x
+    def forward(self, wav, wav_length):
+        wav = wav.squeeze(1)  # [B, T]
+        ssl_features, ssl_lens = self.ssl_model(wav, wav_length)
+        return ssl_features[-1]
 
 
-class Singing_SSL_MOS(nn.Module):
+class MOS_Predictor(nn.Module):
     def __init__(
         self,
-        model_path,
-        ssl_dim=768,
-        ssl_model_name = "wav2vec2_small",
-    ):
-        super(Singing_SSL_MOS, self).__init__()
- 
-        if ssl_model_name in ["hubert_base", "wav2vec2_small"]: 
-            ssl_dim = 768
-        elif ssl_model_name in [ "hubert_large", "wav2vec2_large", "xlsr_base"]:
-            ssl_dim = 1024
+        ssl_model_type,
+        hdim = 128,
+        use_lstm = False,
+    ) -> None:
+        """ MOS Predictor for Singing:
+            pitch_num (int): Max range of pitch
+                    
+        """
+        super(MOS_Predictor, self).__init__()
+
+        self.ssl_model, feature_dim = load_ssl_model_s3prl(ssl_model_type)
+        self.use_lstm = use_lstm
+        if self.use_lstm is True:    
+            self.blstm = torch.nn.LSTM(
+                input_size = feature_dim, 
+                hidden_size = hdim, 
+                num_layers = 1, 
+                bidirectional=True, 
+                batch_first=True
+            )
+            self.linear = torch.nn.Linear(
+                hdim * 2, 1
+            )
         else:
-            raise ValueError("Please check ssl_model_name and make sure in ssl_model_list.")
-               
-        feature_dim = ssl_dim
-        self.ssl_model = SSL_Model(
-            model_path,
-            ssl_dim,
-            ssl_model_name,
-        )
-        self.linear = torch.nn.Linear(
-            feature_dim, 1
-        )
+            self.linear = torch.nn.Linear(
+                feature_dim, 1
+            )
         
     
     def forward(
         self,
         audio,
+        audio_length,
     ):
-        ssl_feature = self.ssl_model(audio)
+        x = self.ssl_model(audio, audio_length)
+        # ssl_feature = self.ssl_model(audio)
         
-        T_len = ssl_feature.shape[1]
-        
-        x = ssl_feature[:, :T_len, :]
-        
-        pred_score = self.linear(x)
-        pred_score = torch.mean(pred_score, dim=1)
-        pred_score = pred_score.squeeze(1)
-        return pred_score
-
+        if self.use_lstm:
+            lstm_out, _ = self.blstm(x)
+            frame_score = self.linear(lstm_out).squeeze(-1)
+            utt_score = frame_score[:, -1]
+        else:
+            frame_score = self.linear(x).squeeze(-1)
+            utt_score = torch.mean(frame_score, dim=1)
+        return utt_score
