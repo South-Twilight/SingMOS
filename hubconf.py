@@ -38,7 +38,7 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
         print("loading base model ended.")
 
         print("loading ft model...")
-        ft_model_path = "checkpoints/ft_wav2vec2_small_10steps.pt"
+        ft_model_path = "checkpoints/ft_wav2vec2_small_23steps.pt"
         download_model(URLS["singing_ssl_mos"], ft_model_path)
         print("loading ft model ended.")
 
