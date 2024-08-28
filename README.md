@@ -40,6 +40,7 @@ First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
 predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "<model_specifier>", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "<model_specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings : wave in `(Batch, Time)`, length in `(Batch)`:
@@ -69,6 +70,11 @@ Currently we provide below models:
 |--------------|------------------|-------------------------------|
 | Singing-SSL-MOS | `singing_ssl_mos` | [Cooper (2021)][paper_sslmos21] |
 
+
+### News:
+
+- **[2024.08.28]**: Release *SingMOS:v0.2.0* version to support S3PRL models as base models instead of fairseq models.
+- **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
 
 ### News:
 
