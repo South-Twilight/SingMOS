@@ -10,7 +10,7 @@ Singing MOS Predictor (Baseline for [Singing Track in VoiceMOS Challenge 2024](h
 Predict subjective score with only 2 lines of code, with various MOS prediction systems.
 
 ```python
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singing-ssl-mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "singing-ssl-mos", trust_repo=True)
 score = predictor(wave, sr)
 # tensor([3.7730]), good quality singing!
 ```
@@ -23,7 +23,7 @@ import torch
 import librosa
 
 wave, sr = librosa.load("<your_audio>.wav", sr=None, mono=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "singsing-ssl-mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "singsing-ssl-mos", trust_repo=True)
 score = predictor(torch.from_numpy(wave).unsqueeze(0), sr)
 # tensor([3.7730])
 ```
@@ -35,7 +35,7 @@ SingMOS use `torch.hub` built-in model loader, so no needs of library import😉
 First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.0", "<model_specifier>", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "<model_specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings :: `(Batch, Time)`:
@@ -60,6 +60,11 @@ Currently we provide below models:
 |--------------|------------------|-------------------------------|
 | Singing-SSL-MOS | `singing-ssl-mos` | [Cooper (2021)][paper_sslmos21] |
 
+
+### News:
+
+- **[2024.08.28]**: Release *SingMOS:v0.2.0* version to support S3PRL models as base models instead of fairseq models.
+- **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
 
 ### Acknowlegements <!-- omit in toc -->
 - MOS-Finetune-SSL
