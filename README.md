@@ -40,7 +40,6 @@ First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
 predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "<model_specifier>", trust_repo=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.0", "<model_specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings : wave in `(Batch, Time)`, length in `(Batch)`:
