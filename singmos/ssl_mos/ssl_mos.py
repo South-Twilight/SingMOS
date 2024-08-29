@@ -1,13 +1,7 @@
 import os
-import argparse
-import fairseq
-import logging
 
-import numpy as np
 import torch
-import torchaudio
 import torch.nn as nn
-import torch.optim as optim
 
 from s3prl.nn import S3PRLUpstream
 
