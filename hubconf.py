@@ -46,7 +46,8 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
             ssl_model_type=model_type,
         )
         model.eval()
-        model.load_state_dict(torch.load(ft_model_path))
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model.load_state_dict(torch.load(ft_model_path, map_location=device))
         return model
     else:
         raise ValueError("Please specify pretrained=True and provide a valid model_path.")
