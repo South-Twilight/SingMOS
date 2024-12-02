@@ -88,3 +88,17 @@ Currently we provide below models:
   - [repository](https://github.com/tarepan/SpeechMOS)
 
 [paper_sslmos21]: https://arxiv.org/abs/2110.02635
+
+### Citation
+```
+@misc{tang2024singmosextensiveopensourcesinging,
+      title={SingMOS: An extensive Open-Source Singing Voice Dataset for MOS Prediction}, 
+      author={Yuxun Tang and Jiatong Shi and Yuning Wu and Qin Jin},
+      year={2024},
+      eprint={2406.10911},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD},
+      url={https://arxiv.org/abs/2406.10911}, 
+}
+```
+
