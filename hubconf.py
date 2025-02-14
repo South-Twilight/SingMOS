@@ -16,11 +16,6 @@ URLS = {
 #  trained on SingMOS dataset (https://huggingface.co/datasets/TangRain/SingMOS)
 
 
-def download_model(model_url, tgt_path):
-    if not os.path.exists(tgt_path):
-        os.system(f'wget {model_url} -O {tgt_path}')
-
-
 def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
     """
     `Singing SSL MOS` singing naturalness MOS predictor.
@@ -29,25 +24,14 @@ def singing_ssl_mos(pretrained: bool = True, **kwargs) -> MOS_Predictor:
         progress - Whether to show model checkpoint load progress
     """
     if pretrained is True:
-        if not os.path.exists("checkpoints"):
-            os.makedirs("checkpoints")
-
-        model_type = "wav2vec2_base_960"
-        print("loading base model...")
-        ssl_model, ssl_dim = load_ssl_model_s3prl(model_type)
-        print("loading base model ended.")
-
-        print("loading ft model...")
-        ft_model_path = "checkpoints/ft_wav2vec2_small_23steps.pt"
-        download_model(URLS["singing_ssl_mos"], ft_model_path)
-        print("loading ft model ended.")
-
+        base_model_type = "wav2vec2_base_960"
         model = MOS_Predictor(
-            ssl_model_type=model_type,
+            ssl_model_type=base_model_type,
         )
-        model.eval()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model.load_state_dict(torch.load(ft_model_path, map_location=device))
+        state_dict = torch.hub.load_state_dict_from_url(url=URLS["singing_ssl_mos"], map_location=device)
+        model.load_state_dict(state_dict)
+        model.eval()
         return model
     else:
         raise ValueError("Please specify pretrained=True and provide a valid model_path.")
