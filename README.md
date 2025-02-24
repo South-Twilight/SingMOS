@@ -6,6 +6,7 @@
 
 Singing MOS Predictor (Baseline for [Singing Track in VoiceMOS Challenge 2024](https://sites.google.com/view/voicemos-challenge/past-challenges/voicemos-challenge-2024)): train a ssl-mos model in [nii-yamagishilab/mos-finetune-ssl](https://github.com/nii-yamagishilab/mos-finetune-ssl) repository using [SingMOS](https://huggingface.co/datasets/TangRain/SingMOS) dataset.
 
+Our paper link: [SingMOS: An extensive Open-Source Singing Voice Dataset for MOS Prediction](https://arxiv.org/abs/2406.10911)
 
 Predict subjective score with only 2 lines of code, with various MOS prediction systems.
 
