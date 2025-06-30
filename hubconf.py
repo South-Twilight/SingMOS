@@ -11,7 +11,7 @@ from singmos.ssl_mos.ssl_mos2 import MOS_Predictor as MOS_Predictor2
 
 URLS = {
     "singing_ssl_mos": "https://github.com/South-Twilight/SingMOS/releases/download/ckpt_s3prl/ft_wav2vec2_base_960_23steps.pt",
-    "singing_ssl_mos_v2": "https://github.com/South-Twilight/SingMOS/releases/download/ckpt_s3prl/ft_wav2vec2_base_960_5steps_full.pt",
+    "singing_ssl_mos_v2": "https://github.com/South-Twilight/SingMOS/releases/download/ckpt_s3prl/ft_wav2vec2_base_960_5steps_full.pth",
 }
 # [Origin]
 # "singing_ssl_mos" is derived from official nii-yamagishilab/mos-finetune-ssl, under BSD 3-Clause License (Copyright (c) 2021, Yamagishi Laboratory, National Institute of Informatics, https://github.com/nii-yamagishilab/mos-finetune-ssl/blob/main/LICENSE
