@@ -8,14 +8,22 @@ Singing MOS Predictor (Baseline for [Singing Track in VoiceMOS Challenge 2024](h
 
 Our paper link: [SingMOS: An extensive Open-Source Singing Voice Dataset for MOS Prediction](https://arxiv.org/abs/2406.10911)
 
+### One line to use:
 Predict subjective score with only 2 lines of code, with various MOS prediction systems.
 
 ```python
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.1", "singing_ssl_mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.3.0", "singing_ssl_mos_v2", trust_repo=True)
 # wave: [B, T], length: [B]
 score = predictor(wave, length)
 # tensor([3.7730]), good quality singing!
 ```
+
+## News:
+
+- **[2025.06.30]**: Release *SingMOS:v0.3.0* version trained with more data.
+- **[2024.08.28]**: Release *SingMOS:v0.2.1* version to support S3PRL models as base models instead of fairseq models.
+- **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
+
 
 ## Example
 Predict naturalness (Naturalness Mean-Opinion-Score) of your audio by Singing-SSL-MOS:  
@@ -25,7 +33,7 @@ import torch
 import librosa
 
 wave, sr = librosa.load("<your_audio>.wav", sr=None, mono=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.1", "singing_ssl_mos", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.3.0", "singing_ssl_mos_v2", trust_repo=True)
 wave = torch.from_numpy(wave)
 length = torch.tensor([wave.shape[1]])
 # wave: [B, T], length: [B]
@@ -35,12 +43,12 @@ score = predictor(wave, length)
 
 ## How to Use
 SingMOS use `torch.hub` built-in model loader, so no needs of library import😉  
-(As general dependencies, SingMOS requires Python=>3.8, `torch` and `fairseq`.)  
+(As general dependencies, SingMOS requires Python=>3.8, `torch` and `s3prl`.)  
 
 First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.2.1", "<model_specifier>", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v0.3.0", "<model_specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings : wave in `(Batch, Time)`, length in `(Batch)`:
@@ -52,7 +60,7 @@ for i in range(waves.shape[0]):
 length = torch.tensor(length)
 # wave: [2, T], length: [2]
 score = predictor(wave, length)
-# tensor([2.0321, 2.0943])
+# tensor([4.0321, 2.0943])
 ```
 
 Returned scores :: `(Batch,)` are each singing's predicted MOS.  
@@ -66,20 +74,10 @@ average_score = score.mean().item()
 This repository is reimplementation collection of various MOS prediction systems.  
 Currently we provide below models:  
 
-| Model        | specifier        | paper                         |
-|--------------|------------------|-------------------------------|
-| Singing-SSL-MOS | `singing_ssl_mos` | [Cooper (2021)][paper_sslmos21] |
-
-
-### News:
-
-- **[2024.08.28]**: Release *SingMOS:v0.2.1* version to support S3PRL models as base models instead of fairseq models.
-- **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
-
-### News:
-
-- **[2024.08.28]**: Release *SingMOS:v0.2.1* version to support S3PRL models as base models instead of fairseq models.
-- **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
+| Model        | specifier        | Train Data        | paper                         |
+|--------------|------------------|----------------|-------------------------------|
+| Singing-SSL-MOS | `singing_ssl_mos` | SingMOS v1 part | [Tang (2024)](https://arxiv.org/abs/2406.10911) |
+| Singing-SSL-MOS | `singing_ssl_mos_v2` | SingMOS full data| [Tang (2024)](https://arxiv.org/abs/2406.10911) |
 
 ### Acknowlegements <!-- omit in toc -->
 - MOS-Finetune-SSL
