@@ -12,7 +12,7 @@ ssl_model_list = [
     "wavlm_base",
     "wavlm_large",
     "wav2vec2_base_960",
-    "wav2vec2_large_lv60_cv_swbd_fsh",
+    "wav2vec2_large_ll60k",
     "hubert_base",
     "hubert_large_ll60k",
     "xls_r_300m",
