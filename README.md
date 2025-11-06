@@ -34,7 +34,7 @@ import torch
 import librosa
 
 wave, sr = librosa.load("<your_audio>.wav", sr=None, mono=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.1", "singmos_pro", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.0", "singmos_pro", trust_repo=True)
 wave = torch.from_numpy(wave)
 length = torch.tensor([wave.shape[1]])
 # wave: [B, T], length: [B]
@@ -49,7 +49,7 @@ SingMOS use `torch.hub` built-in model loader, so no needs of library import😉
 First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
-predictor = torch.hub.load("South-Twilight/SingMOS:v0.1.1", "<model_specifier>", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.0", "<model_specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings : wave in `(Batch, Time)`, length in `(Batch)`:
