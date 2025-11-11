@@ -4,25 +4,30 @@
 
 </div>
 
-Singing MOS Predictor (Baseline for [Singing Track in VoiceMOS Challenge 2024](https://sites.google.com/view/voicemos-challenge/past-challenges/voicemos-challenge-2024)): train a ssl-mos model in [nii-yamagishilab/mos-finetune-ssl](https://github.com/nii-yamagishilab/mos-finetune-ssl) repository using [SingMOS-Pro](https://huggingface.co/datasets/TangRain/SingMOS-Pro) dataset.
+Singing MOS Predictor: A predictor for singing mean-opinion-score prediction.
 
 Our paper link: [SingMOS-Pro: A Comprehensive Benchmark for Singing Quality Assessment](https://arxiv.org/abs/2510.01812)
 
-### One line to use:
-Predict subjective score with only 2 lines of code, with various MOS prediction systems.
+## Predictors
+This repository is reimplementation collection of various MOS prediction systems.  
+Currently we provide below models:  
 
-```python
-predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.0", "singmos_pro", trust_repo=True)
-# wave: [B, T], length: [B]
-score = predictor(wave, length)
-# tensor([3.7730]), good quality singing!
-```
+| Model        | specifier        | Train Data        | paper                         |
+|--------------|------------------|----------------|-------------------------------|
+| Singing-SSL-MOS | `singmos_pro` | SingMOS-Pro | [Tang (2025)](https://arxiv.org/abs/2510.01812) |
+| Singing-SSL-MOS | `singmos_v1` | SingMOS-v1 | [Tang (2024)](https://arxiv.org/abs/2406.10911) |
+
+
+- `singmos_pro`: Benchmark for Singing MOS Prediction: train a ssl-mos model in [South-Twilight/singmos_predictor](https://github.com/South-Twilight/singmos_predictor) repository using [SingMOS-Pro](https://huggingface.co/datasets/TangRain/SingMOS-Pro) dataset.
+- `singmos_v1`: Baseline for [Singing Track in VoiceMOS Challenge 2024](https://sites.google.com/view/voicemos-challenge/past-challenges/voicemos-challenge-2024): train a ssl-mos model in [nii-yamagishilab/mos-finetune-ssl](https://github.com/nii-yamagishilab/mos-finetune-ssl) repository using [SingMOS-v1](https://huggingface.co/datasets/TangRain/SingMOS-v1) dataset.
+
 
 ## News:
 
-- **[2025.11.06]**: Release *SingMOS:v1.1.0* version trained with SingMOS-Pro.
-- **[2025.06.30]**: Release *SingMOS:v0.3.0* version trained with more data.
-- **[2024.08.28]**: Release *SingMOS:v0.2.1* version to support S3PRL models as base models instead of fairseq models.
+- **[2025.11.11]**: Release *SingMOS:v1.1.1* version, fix bugs with batch inference.
+- **[2025.11.06]**: Release *SingMOS:v1.1.0* version, train with SingMOS-Pro.
+- **[2025.06.30]**: Release *SingMOS:v0.3.0* version, train with more data.
+- **[2024.08.28]**: Release *SingMOS:v0.2.1* version, support S3PRL models as base models instead of fairseq models.
 - **[2024.06.28]**: Release *SingMOS:v0.1.0* version.
 
 
@@ -34,7 +39,7 @@ import torch
 import librosa
 
 wave, sr = librosa.load("<your_audio>.wav", sr=None, mono=True)
-predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.0", "singmos_pro", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.1", "singmos_pro", trust_repo=True)
 wave = torch.from_numpy(wave)
 length = torch.tensor([wave.shape[1]])
 # wave: [B, T], length: [B]
@@ -49,7 +54,7 @@ SingMOS use `torch.hub` built-in model loader, so no needs of library import😉
 First, instantiate a MOS predictor with model specifier string:
 ```python
 import torch
-predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.0", "<model_specifier>", trust_repo=True)
+predictor = torch.hub.load("South-Twilight/SingMOS:v1.1.1", "specifier>", trust_repo=True)
 ```
 
 Then, pass tensor of singings : wave in `(Batch, Time)`, length in `(Batch)`:
@@ -70,15 +75,6 @@ If you hope MOS average over singings (e.g. for SVS model evaluation), just aver
 average_score = score.mean().item()
 # 2.0632
 ```
-
-## Predictors
-This repository is reimplementation collection of various MOS prediction systems.  
-Currently we provide below models:  
-
-| Model        | specifier        | Train Data        | paper                         |
-|--------------|------------------|----------------|-------------------------------|
-| Singing-SSL-MOS | `singmos_v1` | SingMOS-v1 | [Tang (2024)](https://arxiv.org/abs/2406.10911) |
-| Singing-SSL-MOS | `singmos_pro` | SingMOS-Pro | [Tang (2025)](https://arxiv.org/abs/2510.01812) |
 
 ### Acknowlegements <!-- omit in toc -->
 - MOS-Finetune-SSL
