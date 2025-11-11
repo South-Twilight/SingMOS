@@ -12,6 +12,8 @@ from s3prl.nn import S3PRLUpstream
 
 from .utils import make_non_pad_mask
 
+logger = logging.getLogger()
+
 ssl_model_list = [
     "wavlm_base",
     "wavlm_large",
@@ -210,7 +212,7 @@ class MOS_Predictor(nn.Module):
             loss, stats, ret_val
         """
         ssl_feature = self.ssl_model(audio, audio_length)  # [B, T, D]
-        T_len = ssl_feature.shape[1]
+        bs, T_len = ssl_feature.shape[0], ssl_feature.shape[1]
         audio_token_length = torch.ceil(audio_length / 320)
 
         x = ssl_feature
@@ -242,7 +244,7 @@ class MOS_Predictor(nn.Module):
         
         if self.use_judge_id:
             if judge_id is None:
-                judge_id = torch.Tensor([0]).to(x.device)
+                judge_id = torch.Tensor([0] * bs).to(x.device)
             judge_idx = judge_id.long()
             judge_feat = self.judge_emb(judge_idx)  # [B, hdim]
             judge_feat = judge_feat.unsqueeze(1).expand(-1, T_len, -1)  # tile over time
@@ -250,7 +252,7 @@ class MOS_Predictor(nn.Module):
         
         if self.use_domain_id:
             if domain_id is None:
-                domain_id = torch.Tensor([1]).to(x.device)
+                domain_id = torch.Tensor([1] * bs).to(x.device)
             domain_idx = domain_id.long()
             domain_feat = self.domain_emb(domain_idx) # [B, hdim]
             domain_feat = domain_feat.unsqueeze(1).expand(-1, T_len, -1) # tile over time
