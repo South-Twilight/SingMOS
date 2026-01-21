@@ -1,10 +1,16 @@
 <div align="center">
 
 # SingMOS
+[![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2510.01812)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-blue?label=Dataset)](https://huggingface.co/datasets/TangRain/SingMOS-Pro)
+[![GitHub Stars](https://img.shields.io/github/stars/South-Twilight/SingMOS?style=social&label=GitHub+Stars)](https://github.com/South-Twilight/SingMOS)
 
 </div>
 
 Singing MOS Predictor: A predictor for singing mean-opinion-score prediction.
+
+
+
 
 Our paper link: [SingMOS-Pro: A Comprehensive Benchmark for Singing Quality Assessment](https://arxiv.org/abs/2510.01812)
 
